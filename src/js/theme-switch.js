@@ -12,29 +12,33 @@ const Theme = {
     DARK: 'dark-theme',
 };
 
-
 const switchTheme = document.querySelector("input.js-switch-input");
 const bodyRef = document.querySelector('body');
 
 let currentTheme = localStorage.getItem("theme");
-if(currentTheme){
+
+if(currentTheme !== null){
     bodyRef.classList.add(currentTheme);
+}else{
+    bodyRef.classList.add(Theme.LIGHT);
+    localStorage.setItem("theme", Theme.LIGHT)
+    currentTheme = Theme.LIGHT
 }
 
 switchTheme.addEventListener('change', switcher)
 
 function switcher () {
-    if(currentTheme){
-        localStorage.setItem("theme", Theme.LIGHT)
-        bodyRef.classList.remove(currentTheme)
-        bodyRef.classList.add(Theme.LIGHT)
-        switchTheme.checked = false;
-    }else{
+    currentTheme = localStorage.getItem("theme");
+
+    if(currentTheme != Theme.DARK){
         localStorage.setItem("theme", Theme.DARK)
         bodyRef.classList.remove(currentTheme)
         bodyRef.classList.add(Theme.DARK)
         switchTheme.checked = true;
+    }else{
+        localStorage.setItem("theme", Theme.LIGHT)
+        bodyRef.classList.remove(currentTheme)
+        bodyRef.classList.add(Theme.LIGHT)
+        switchTheme.checked = false;
     }
-    console.log(currentTheme)
-    console.log(switchTheme.checked)
 }
