@@ -12,33 +12,54 @@ const Theme = {
     DARK: 'dark-theme',
 };
 
+let themeStatus = {
+    currentTheme: Theme.LIGHT,
+    isChecked: false
+}
+
 const switchTheme = document.querySelector("input.js-switch-input");
 const bodyRef = document.querySelector('body');
 
-let currentTheme = localStorage.getItem("theme");
+const themeStatusJson = JSON.stringify(themeStatus);
+localStorage.setItem("themeStatus", themeStatusJson);
 
-if(currentTheme !== null){
-    bodyRef.classList.add(currentTheme);
+themeStatus = JSON.parse(localStorage.getItem("themeStatus"));
+
+// themeStatus.currentTheme = localStorage.getItem("theme");
+// themeStatus.isChecked = localStorage.getItem("isChecked");
+
+if(themeStatus.currentTheme !== null){
+    bodyRef.classList.add(themeStatus.currentTheme);
+    themeStatus.isChecked = true;
 }else{
     bodyRef.classList.add(Theme.LIGHT);
-    localStorage.setItem("theme", Theme.LIGHT)
-    currentTheme = Theme.LIGHT
+    themeStatus.currentTheme = Theme.LIGHT;
+    themeStatus.isChecked = false;
+    localStorage.setItem("themeStatus", JSON.stringify(themeStatus))
 }
 
-switchTheme.addEventListener('change', switcher)
+switchTheme.addEventListener('change', switcher);
 
-function switcher () {
-    currentTheme = localStorage.getItem("theme");
+function switcher () {    
+    if(themeStatus.currentTheme != Theme.DARK){
+        bodyRef.classList.remove(themeStatus.currentTheme);
+        bodyRef.classList.add(Theme.DARK);
 
-    if(currentTheme != Theme.DARK){
-        localStorage.setItem("theme", Theme.DARK)
-        bodyRef.classList.remove(currentTheme)
-        bodyRef.classList.add(Theme.DARK)
-        switchTheme.checked = true;
+        themeStatus.isChecked = true;
+        themeStatus.currentTheme = Theme.DARK;
+
+        switchTheme.setAttribute("checked", "")
+
+        localStorage.setItem("themeStatus", JSON.stringify(themeStatus))
     }else{
-        localStorage.setItem("theme", Theme.LIGHT)
-        bodyRef.classList.remove(currentTheme)
+        bodyRef.classList.remove(themeStatus.currentTheme)
         bodyRef.classList.add(Theme.LIGHT)
-        switchTheme.checked = false;
+        
+        themeStatus.isChecked = false;
+        themeStatus.currentTheme = Theme.LIGHT;
+        
+        switchTheme.removeAttribute("checked", "")
+
+        localStorage.setItem("themeStatus", JSON.stringify(themeStatus))
     }
 }
