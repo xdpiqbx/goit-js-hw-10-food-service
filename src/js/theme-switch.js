@@ -7,15 +7,19 @@
 Если при загрузке страницы тема темная, не забудь поставить свойство checked у чекбокса input.js-switch-input в true, чтобы ползунок сдвинулся в правильное положение.
 */
 
-const switchTheme = document.querySelector("input.js-switch-input");
-const bodyRef = document.querySelector('body');
+const Params = {
+    
+    Theme:{
+        LIGHT: 'light-theme',
+        DARK: 'dark-theme',
+    },
 
-const Theme = {
-    LIGHT: 'light-theme',
-    DARK: 'dark-theme',
-};
+    bodyRef: document.querySelector('body'),
+    switchTheme: document.querySelector("input.js-switch-input")
 
-function themeStatusInit(){
+}
+
+const themeStatusCreate = () => {
     
     let themeStatus = {}
     
@@ -30,9 +34,9 @@ function themeStatusInit(){
     return themeStatus
 }
 
-function setLastTheme(){
+const setLastTheme = ({bodyRef, Theme, switchTheme}) => {
 
-    themeStatus = themeStatusInit()
+    let themeStatus = themeStatusCreate()
 
     if(themeStatus.currentTheme !== null){
         bodyRef.classList.add(themeStatus.currentTheme);
@@ -47,17 +51,20 @@ function setLastTheme(){
     }
 }
 
-function customToggle (ref, lsObj, theme){
+const customToggle = (ref, lsObj, theme) => {
     ref.classList.remove(lsObj.currentTheme);
     ref.classList.add(theme);
-    !lsObj.isChecked ? switchTheme.setAttribute("checked", "") 
-                    : switchTheme.removeAttribute("checked", "")
+    !lsObj.isChecked ? Params.switchTheme.setAttribute("checked", "") 
+                     : Params.switchTheme.removeAttribute("checked", "")
     
     lsObj.isChecked = lsObj.isChecked ? false : true;
     lsObj.currentTheme = theme;
 }
 
-function switcher () {    
+const switcher = ({bodyRef, Theme}) => {
+
+    const themeStatus = JSON.parse(localStorage.getItem("themeStatus"))
+    
     if(!themeStatus.isChecked){
         customToggle(bodyRef, themeStatus, Theme.DARK)
     }else{
@@ -66,6 +73,6 @@ function switcher () {
     localStorage.setItem("themeStatus", JSON.stringify(themeStatus))
 }
 
-setLastTheme();
+setLastTheme(Params);
 
-switchTheme.addEventListener('change', switcher);
+Params.switchTheme.addEventListener('change', switcher.bind(this, Params));
